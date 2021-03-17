@@ -2,8 +2,9 @@ import React from "react";
 import { ScrollView, Image, StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-elements";
 import Loading from "../../components/Loading";
-
+import { useNavigation } from "@react-navigation/native";
 export default function UserGuest() {
+  const navigation = useNavigation();
   return (
     <ScrollView centerContent style={styles.viewBody}>
       <Image
@@ -15,14 +16,20 @@ export default function UserGuest() {
       <Text style={styles.description}>
         Valora cuales te han gustado mas y comenta como ha sido tu experiencia.
       </Text>
-      <Button buttonStyle={styles.button} title="Ver Perfil"  onPress={() =>{console.log("click")}}/>
+      <Button
+        buttonStyle={styles.button}
+        title="Ver Perfil"
+        onPress={() => {
+          navigation.navigate("login");
+        }}
+      />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   viewBody: {
-    margin:24,
+    margin: 24,
   },
   image: {
     height: 500,
@@ -36,16 +43,16 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   description: {
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     textAlign: "justify",
     fontSize: 20,
     color: "#eaa8bb",
   },
   button: {
-    marginTop:20,
-    paddingVertical:22,
-    color:"#7e37bc",
-    fontSize:25,
+    marginTop: 20,
+    paddingVertical: 22,
+    color: "#7e37bc",
+    fontSize: 25,
     backgroundColor: "#ff6c6c",
   },
 });

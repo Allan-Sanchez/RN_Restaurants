@@ -9,11 +9,26 @@ export const isUserLogged = () => {
   let isLogged = false;
 
   firebase.auth().onAuthStateChanged((user) => {
-    user !== null ? "test" : "test2";
-    // return user !== null ? isLogged = true : isLogged = false;
+    user !== null && (isLogged = true);
   });
+  return isLogged;
 };
 
-export const getCurrentUser = () =>{
-  return firebase.auth().currentUser
-}
+export const getCurrentUser = () => {
+  return firebase.auth().currentUser;
+};
+
+export const registerUserFirebase = async (data) => {
+  const {email, password} = data;
+  const result = { statusResponse: true, error: null };
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
+  } catch (error) {
+    result.error("El usuario ya existe");
+  }
+  return result;
+};
+
+export const LogoutFirebase = () => {
+  return firebase.auth().signOut();
+};
