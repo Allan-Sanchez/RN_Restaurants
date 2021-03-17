@@ -19,13 +19,26 @@ export const getCurrentUser = () => {
 };
 
 export const registerUserFirebase = async (data) => {
-  const {email, password} = data;
+  const { email, password } = data;
   const result = { statusResponse: true, error: null };
   try {
     await firebase.auth().createUserWithEmailAndPassword(email, password);
   } catch (error) {
-    result.error("El usuario ya existe");
+    result.statusResponse = false;
+    result.error = "El usuario ya existe";
   }
+  return result;
+};
+export const loginWithEmailFirebase = async (data) => {
+  const { email, password } = data;
+  const result = { statusResponse: true, error: null };
+  try {
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = "Usuario o contraseña no valido";
+  }
+  console.log("result firebase",result)
   return result;
 };
 

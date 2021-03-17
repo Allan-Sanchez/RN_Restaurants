@@ -18,6 +18,7 @@ export default function UserGuest() {
       </Text>
       <Button
         buttonStyle={styles.button}
+        titleStyle={styles.buttonTitle}
         title="Ver Perfil"
         onPress={() => {
           navigation.navigate("login");
@@ -51,8 +52,10 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     paddingVertical: 22,
-    color: "#7e37bc",
     fontSize: 25,
     backgroundColor: "#ff6c6c",
   },
+  buttonTitle:{
+    fontSize: 20,
+  }
 });

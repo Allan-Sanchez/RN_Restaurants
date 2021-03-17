@@ -5,7 +5,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 export default function Register() {
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView style={styles.container}>
       <Image
         source={require("../../assets/restaurant-logo.png")}
         resizeMode="contain"
@@ -17,6 +17,9 @@ export default function Register() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 40,
+  },
   image: {
     height: 300,
     width: "100%",
