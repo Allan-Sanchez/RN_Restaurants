@@ -1,16 +1,52 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { Avatar } from "react-native-elements";
+import { updateProfileFirebase, uploadImage } from "../../utils/actions";
+import { loadImageFromGallery } from "../../utils/helpers";
 
-export default function InfoUser({ user }) {
+export default function InfoUser({ user, setLoading, setLoadingText }) {
+  const [photoUrl, setPhotoUrl] = useState(user.photoURL);
+  const handleImage = async () => {
+    //get local image url
+    const result = await loadImageFromGallery([1, 1]);
+    if (!result.status) {
+      return;
+    }
+    setLoadingText("Actualizando Image...");
+    setLoading(true);
+    // upload image firebase
+    const resultUploadImage = await uploadImage(
+      result.image,
+      "avatars",
+      user.uid
+    );
+    if (!resultUploadImage.statusResponse) {
+      setLoading(false);
+      Alert.alert("Ha ocurrido un error al almacenar la foto de perfil");
+      return;
+    }
+    // change user.photo.URL of firebase user
+    const resultUpdateImage = await updateProfileFirebase({
+      photoURL: resultUploadImage.url,
+    });
+
+    setLoading(false);
+    if (resultUpdateImage.statusResponse) {
+      setPhotoUrl(resultUploadImage.url);
+    } else {
+      Alert.alert("Ha ocurrido un error al cambiar la foto de perfil");
+      return;
+    }
+  };
   return (
     <View style={styles.container}>
       <Avatar
         size="large"
         rounded
+        onPress={handleImage}
         source={
-          user.photoURL
-            ? { uri: photoURL }
+          photoUrl
+            ? { uri: photoUrl }
             : require("../../assets/avatar-default.jpg")
         }
       />
@@ -36,11 +72,11 @@ const styles = StyleSheet.create({
   },
   displayName: {
     fontSize: 20,
-    color:"#ff6c6c",
+    color: "#ff6c6c",
     fontWeight: "bold",
     paddingBottom: 5,
   },
-  email:{
+  email: {
     color: "#eaa8bb",
-  }
+  },
 });
