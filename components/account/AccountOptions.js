@@ -8,7 +8,7 @@ import ChangeDisplayName from "./ChangeDisplayName";
 import ChangeEmail from "./ChangeEmail";
 import ChangePassword from "./ChangePassword";
 
-export default function AccountOptions({ user, toastRef,setReloadUser }) {
+export default function AccountOptions({ user, toastRef, setReloadUser }) {
   const [showModal, setShowModal] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
   const generateOptions = () => {
@@ -53,10 +53,19 @@ export default function AccountOptions({ user, toastRef,setReloadUser }) {
         );
         break;
       case "email":
-        setRenderComponent(<ChangeEmail />);
+        setRenderComponent(
+          <ChangeEmail
+            email={user.email}
+            setShowModal={setShowModal}
+            toastRef={toastRef}
+            setReloadUser={setReloadUser}
+          />
+        );
         break;
       case "password":
-        setRenderComponent(<ChangePassword />);
+        setRenderComponent(
+          <ChangePassword setShowModal={setShowModal} toastRef={toastRef} />
+        );
         break;
     }
     setShowModal(true);

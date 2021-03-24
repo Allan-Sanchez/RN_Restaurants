@@ -30,7 +30,6 @@ export default function ChangeDisplayName({
   };
   const validateForm = () => {
     setError(null);
-    console.log(newDisplayName)
     if (isEmpty(newDisplayName)) {
       setError("Debes escribir al menos un Nombre.");
       return;

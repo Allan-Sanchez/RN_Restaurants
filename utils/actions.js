@@ -6,6 +6,7 @@ import { fileToBlob } from "./helpers";
 
 const db = firebase.firestore(firebaseApp);
 
+//validated if user is logged
 export const isUserLogged = () => {
   let isLogged = false;
 
@@ -15,10 +16,12 @@ export const isUserLogged = () => {
   return isLogged;
 };
 
+//get current user
 export const getCurrentUser = () => {
   return firebase.auth().currentUser;
 };
 
+//register one user firebase
 export const registerUserFirebase = async (data) => {
   const { email, password } = data;
   const result = { statusResponse: true, error: null };
@@ -30,6 +33,7 @@ export const registerUserFirebase = async (data) => {
   }
   return result;
 };
+//login firebase with password and email
 export const loginWithEmailFirebase = async (data) => {
   const { email, password } = data;
   const result = { statusResponse: true, error: null };
@@ -43,10 +47,12 @@ export const loginWithEmailFirebase = async (data) => {
   return result;
 };
 
+//close session in firebase
 export const LogoutFirebase = () => {
   return firebase.auth().signOut();
 };
 
+//upload one image firebase using uid how name
 export const uploadImage = async (image, path, name) => {
   const result = { statusResponse: false, error: null, url: null };
   const ref = firebase.storage().ref(path).child(name);
@@ -65,10 +71,49 @@ export const uploadImage = async (image, path, name) => {
   return result;
 };
 
+//update user name
 export const updateProfileFirebase = async (data) => {
   const result = { statusResponse: true, error: null };
   try {
     await firebase.auth().currentUser.updateProfile(data);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = error;
+  }
+  return result;
+};
+//reauthenticate user with password
+export const reauthenticateFirebase = async (password) => {
+  const result = { statusResponse: true, error: null };
+  const user = getCurrentUser();
+  const credentials = await firebase.auth.EmailAuthProvider.credential(
+    user.email,
+    password
+  );
+  try {
+    await user.reauthenticateWithCredential(credentials);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = error;
+  }
+  return result;
+};
+//update email firebase//
+export const updateEmailFirebase = async (email) => {
+  const result = { statusResponse: true, error: null };
+  try {
+    await firebase.auth().currentUser.updateEmail(email);
+  } catch (error) {
+    result.statusResponse = false;
+    result.error = error;
+  }
+  return result;
+};
+//update password firebase//
+export const updatePasswordFirebase = async (password) => {
+  const result = { statusResponse: true, error: null };
+  try {
+    await firebase.auth().currentUser.updatePassword(password);
   } catch (error) {
     result.statusResponse = false;
     result.error = error;
