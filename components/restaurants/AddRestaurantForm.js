@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { map, size } from "lodash";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { map, size, filter } from "lodash";
+import { StyleSheet, View, ScrollView, Alert } from "react-native";
 import CountryPicker from "react-native-country-picker-modal";
 import { Avatar, Button, Icon, Input } from "react-native-elements";
 import { loadImageFromGallery } from "../../utils/helpers";
@@ -57,7 +57,7 @@ export default function AddRestaurantForm({
   );
 }
 
-function FormAdd({setFormData, formData, errorData }) {
+function FormAdd({ setFormData, formData, errorData }) {
   const [country, setCountry] = useState("GT");
   const [callinCode, setCallinCode] = useState("502");
   const [phone, setPhone] = useState("");
@@ -134,15 +134,37 @@ function FormAdd({setFormData, formData, errorData }) {
     </View>
   );
 }
-function UploadImageForm({ toastRef,imageSelected, setImageSelected }) {
-  const handleUploadImage = async() =>{
-    const response = await loadImageFromGallery([4,3]);
+function UploadImageForm({ toastRef, imageSelected, setImageSelected }) {
+  const handleUploadImage = async () => {
+    const response = await loadImageFromGallery([4, 3]);
     if (!response.status) {
-      toastRef.current.show("No has seleccionado ninguna imagen")
+      toastRef.current.show("No has seleccionado ninguna imagen");
     }
-    console.log(imageSelected)
-    setImageSelected([...imageSelected,response.image])
-  }
+    if (response.image) {
+      setImageSelected([...imageSelected, response.image]);
+    }
+  };
+  const handleRemoveImage = (image) => {
+    Alert.alert(
+      "Eliminar Imagen",
+      "Estas segudo de eliminar esta imagen",
+      [
+        {
+          text: "No",
+          style: "cancel",
+        },
+        {
+          text: "Si",
+          onPress: () => {
+            setImageSelected(
+              filter(imageSelected, (imageUrl) => imageUrl !== image)
+            );
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
   return (
     <ScrollView horizontal style={styles.containerImage}>
       {size(imageSelected) < 10 && (
@@ -154,11 +176,14 @@ function UploadImageForm({ toastRef,imageSelected, setImageSelected }) {
           onPress={handleUploadImage}
         />
       )}
-      {
-        map(imageSelected,(image,index) => (
-          <Avatar key={index} source={{uri:image}} style={styles.miniatureImage}/>
-        ))
-      }
+      {map(imageSelected, (image, index) => (
+        <Avatar
+          key={index}
+          source={{ uri: image }}
+          style={styles.miniatureImage}
+          onPress={() => handleRemoveImage(image)}
+        />
+      ))}
     </ScrollView>
   );
 }
@@ -206,9 +231,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     backgroundColor: "#e3e3e3",
   },
-  miniatureImage:{
-    width:70,
-    height:70,
-    marginRight:10
-  }
+  miniatureImage: {
+    width: 70,
+    height: 70,
+    marginRight: 10,
+  },
 });
